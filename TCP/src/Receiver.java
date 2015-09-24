@@ -1,5 +1,6 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -10,7 +11,7 @@ public class Receiver extends Thread {
     DataInputStream in;
     String message;
 
-    Receiver(Socket socket) {
+    Receiver(Socket socket) throws IOException {
         this.socket = socket;
         // make DataInputStream
         in = new DataInputStream(socket.getInputStream());
@@ -18,9 +19,18 @@ public class Receiver extends Thread {
 
     @Override
     public void run() {
-        // readUTF(message)
-        message = in.readUTF();
-        // print message
-        System.out.println(socket.getInetAddress()+" >> "+ message);
+        while (in != null) {
+            // readUTF(message)
+            try {
+                message = in.readUTF();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // print message
+            System.out.println(socket.getInetAddress() + " >> " + message);
+
+            if (message.equals("bye")) break;
+
+        }
     }
 }

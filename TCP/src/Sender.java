@@ -10,7 +10,7 @@ public class Sender extends Thread{ // 보내는 애니까 입력을 받고 보�
     Socket socket;
     DataOutputStream out;
 
-    Sender(Socket socket){
+    Sender(Socket socket) throws IOException {
         this.socket = socket;
         // make DataOutputStream
         out = new DataOutputStream(socket.getOutputStream()); //출력 역할 하는 애
@@ -21,9 +21,18 @@ public class Sender extends Thread{ // 보내는 애니까 입력을 받고 보�
     public void run() {
         // input message
         Scanner sc = new Scanner(System.in); // 입력을 받음
-        String message = sc.nextLine();
+        while (out != null) {
+            String message = sc.nextLine();
 
-        // writeUTF(message)
-        out.writeUTF(message);
+            // writeUTF(message)
+            try {
+                out.writeUTF(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if(message.equals("bye")) break;
+
+        }
     }
 }
